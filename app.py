@@ -2,6 +2,10 @@ import pandas as pd
 import streamlit as st
 import pickle as pkl
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 # 1. Fetch movie poster using The Movie Database (TMDb) API
@@ -16,9 +20,10 @@ def fetch_poster(movie_id):
         str: URL of the movie poster.
     """
     url = "https://api.themoviedb.org/3/movie/{}?language=en-US".format(movie_id)
+    api_key = os.getenv('API_KEY')
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZTM1YzllYmJkNmUyNmRjOWI1MmM0OTNkMzJiMTBmOSIsIm5iZiI6MTcyOTU4OTY5My42MjIzMiwic3ViIjoiNjcxNzcwNzQ2ZmIwOWUzOTRjMDI5ZWY0Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.Wwb-jZSB1PFv-d8lqUXrYpneaOXyd6NpcVnWWRolQfM"
+        "Authorization": "Bearer {}".format(api_key)
     }
 
     response = requests.get(url, headers=headers)
