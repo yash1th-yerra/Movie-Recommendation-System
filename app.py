@@ -49,7 +49,7 @@ def recommend(movie, movies, similarity):
     movie_index = movies[movies['title'] == movie].index[0]
 
     # Get similarity distances for the selected movie
-    distances = similarity[movie_index]
+    distances = similarity[movie_index].toarray().ravel()
 
     # Sort movies by similarity and get the top 9 recommendations
     movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:10]
@@ -75,7 +75,7 @@ def load_model_data():
         DataFrame: DataFrame containing movie information.
         ndarray: Cosine similarity matrix.
     """
-    similarity = pkl.load(open('similarity.pkl', 'rb'))
+    similarity = pkl.load(open('sparse_cosine_sim.pkl', 'rb'))
     movies_dict = pkl.load(open('movie_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
     return movies, similarity
