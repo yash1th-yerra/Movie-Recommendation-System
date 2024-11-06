@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+
+
 # 1. Fetch movie poster using The Movie Database (TMDb) API
 def fetch_poster(movie_id):
     """
