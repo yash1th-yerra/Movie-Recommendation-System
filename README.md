@@ -36,9 +36,8 @@ There are three primary approaches for a movie recommendation system:
     -   **Limitations**: More complex to implement and computationally intensive.
     -   **Example Techniques**:
         -   **Deep Learning Models**: Neural Collaborative Filtering, recurrent neural networks (RNNs) for sequential recommendations, or transformers to capture more sophisticated patterns in user-item interactions.
-  
- In this Project we have developed Content filtering based Movie Recommendation System
- ![](https://miro.medium.com/v2/resize:fit:281/1*qw5w1ClAW0DEdGzI5kUs2g.png)
+In this Project we have developed Content filtering based Movie Recommendation System
+![](https://miro.medium.com/v2/resize:fit:281/1*qw5w1ClAW0DEdGzI5kUs2g.png)
 Content-Based filtering doesn’t involve other users, but based on our preference, the algorithm will simply pick items with similar content to generate recommendations for us.
 
 #### TF-IDF Vectorizer
