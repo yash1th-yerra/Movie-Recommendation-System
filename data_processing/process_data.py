@@ -1,6 +1,6 @@
 import ast
 from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 # Convert stringified lists to actual lists
@@ -74,7 +74,7 @@ def apply_stemming(movies_df):
 
 # Vectorize the tags
 def vectorize_tags(movies_df):
-    cv = CountVectorizer(max_features=5000, stop_words='english')
-    vectors = cv.fit_transform(movies_df['tags']).toarray()
-    return vectors, cv.get_feature_names_out()
+    vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+    vectors = vectorizer.fit_transform(movies_df['tags']).toarray()
+    return vectors, vectorizer.get_feature_names_out()
 
