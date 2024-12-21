@@ -8,21 +8,49 @@ from data_processing.process_data import (
 )
 from data_processing.recommend import compute_similarity, recommend
 
-# Function to download files from Google Drive
-def download_from_drive(file_id, output_file):
+import requests
+
+
+def download_from_drive(file_id, destination):
     """
-    Downloads a file from Google Drive using its file ID.
+    Downloads a file from Google Drive given its file ID.
 
     Parameters:
         file_id (str): Google Drive file ID.
-        output_file (str): Local path to save the downloaded file.
+        destination (str): Path to save the downloaded file.
 
     Returns:
-        str: Path to the downloaded file.
+        str: Path to the saved file.
     """
-    url = f"https://drive.google.com/uc?id={file_id}"
-    gdown.download(url, output_file, quiet=False)
-    return output_file
+    URL = "https://drive.google.com/uc?export=download"
+
+    with requests.Session() as session:
+        response = session.get(URL, params={'id': file_id}, stream=True)
+        token = get_confirm_token(response)
+
+        if token:
+            params = {'id': file_id, 'confirm': token}
+            response = session.get(URL, params=params, stream=True)
+
+        save_response_content(response, destination)
+    return destination
+
+
+def get_confirm_token(response):
+    """Extracts the confirmation token from the response cookies."""
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+    return None
+
+
+def save_response_content(response, destination):
+    """Saves the response content to a file."""
+    CHUNK_SIZE = 32768
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:  # Filter out keep-alive chunks
+                f.write(chunk)
 
 # Main function to execute the process
 def main(credits_file_id, movies_file_id, movie_title):
