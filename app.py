@@ -79,8 +79,10 @@ def load_model_data():
         ndarray: Cosine similarity matrix.
     """
     # Google Drive file IDs
-    similarity_file_id = "1Io3LPN4d82bL5VzBOYZUTA_UFzeO3xUV"
-    movies_dict_file_id = "12Q5PDgfxt3uwetE2JZR6Or9iUfprCxZN"
+    similarity_file_id = os.getenv("SIMILARITY_FILE_ID")
+    movies_dict_file_id = os.getenv("MOVIES_DICT_FILE_ID")
+    # similarity_file_id = "1Io3LPN4d82bL5VzBOYZUTA_UFzeO3xUV"
+    # movies_dict_file_id = "12Q5PDgfxt3uwetE2JZR6Or9iUfprCxZN"
 
     # Download the files
     gdown.download(f"https://drive.google.com/uc?id={similarity_file_id}", "sparse_cosine_sim.pkl", quiet=False)
