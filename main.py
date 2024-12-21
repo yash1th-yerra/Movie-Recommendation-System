@@ -1,3 +1,5 @@
+import gdown
+
 from data_processing.load_data import load_data, merge_datasets
 from data_processing.clean_data import clean_data
 from data_processing.process_data import (
@@ -6,9 +8,28 @@ from data_processing.process_data import (
 )
 from data_processing.recommend import compute_similarity, recommend
 
+# Function to download files from Google Drive
+def download_from_drive(file_id, output_file):
+    """
+    Downloads a file from Google Drive using its file ID.
+
+    Parameters:
+        file_id (str): Google Drive file ID.
+        output_file (str): Local path to save the downloaded file.
+
+    Returns:
+        str: Path to the downloaded file.
+    """
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, output_file, quiet=False)
+    return output_file
 
 # Main function to execute the process
-def main(credits_file, movies_file, movie_title):
+def main(credits_file_id, movies_file_id, movie_title):
+    # Download datasets from Google Drive
+    credits_file = download_from_drive(credits_file_id, "tmdb_5000_credits.csv")
+    movies_file = download_from_drive(movies_file_id, "tmdb_5000_movies.csv")
+
     # Load and preprocess data
     credits, movies = load_data(credits_file, movies_file)
     movies = merge_datasets(credits, movies)
@@ -40,4 +61,8 @@ def main(credits_file, movies_file, movie_title):
 
 # Example usage
 if __name__ == '__main__':
-    main('tmdb_5000_credits.csv', 'tmdb_5000_movies.csv', 'Avatar')
+    # Replace these with your actual Google Drive file IDs
+    CREDITS_FILE_ID = "18LBoZSogPTkCW3xRbzQYhd_3sS90VD9y"
+    MOVIES_FILE_ID = "1HLf3j2U-CBAXpV9Qnxn096sgF2Db1UWy"
+
+    main(CREDITS_FILE_ID, MOVIES_FILE_ID, "Avatar")
