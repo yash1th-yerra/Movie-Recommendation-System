@@ -1,3 +1,4 @@
+import gdown
 import pandas as pd
 import streamlit as st
 import pickle as pkl
@@ -77,6 +78,15 @@ def load_model_data():
         DataFrame: DataFrame containing movie information.
         ndarray: Cosine similarity matrix.
     """
+    # Google Drive file IDs
+    similarity_file_id = "1Io3LPN4d82bL5VzBOYZUTA_UFzeO3xUV"
+    movies_dict_file_id = "12Q5PDgfxt3uwetE2JZR6Or9iUfprCxZN"
+
+    # Download the files
+    gdown.download(f"https://drive.google.com/uc?id={similarity_file_id}", "sparse_cosine_sim.pkl", quiet=False)
+    gdown.download(f"https://drive.google.com/uc?id={movies_dict_file_id}", "movie_dict.pkl", quiet=False)
+
+
     similarity = pkl.load(open('sparse_cosine_sim.pkl', 'rb'))
     movies_dict = pkl.load(open('movie_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
