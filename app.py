@@ -8,7 +8,47 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Function to download file using requests from Google Drive
+def download_from_drive(file_id, destination):
+    """
+    Downloads a file from Google Drive using its file ID and saves it locally.
 
+    Parameters:
+        file_id (str): The Google Drive file ID.
+        destination (str): The local file path where the file will be saved.
+    """
+    # Construct the download URL
+    url = f"https://drive.google.com/uc?id={file_id}&export=download"
+
+    # Start a session
+    session = requests.Session()
+
+    # Send a request to initiate the download
+    response = session.get(url, stream=True)
+
+    # Handle potential redirection for large files (Google Drive confirmation)
+    if 'confirmation' in response.text:
+        confirm_url = f"https://drive.google.com/uc?export=download&confirm={response.cookies['confirm']}&id={file_id}"
+        response = session.get(confirm_url, stream=True)
+
+    # Write the content to the local file
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(1024):
+            if chunk:
+                f.write(chunk)
+
+    print(f"File downloaded successfully: {destination}")
+
+
+# Example usage of the function to download both similarity and movie dictionary files
+def download_files():
+    # Set your Google Drive file IDs here
+    similarity_file_id = os.getenv("SIMILARITY_FILE_ID")  # Example: '1Io3LPN4d82bL5VzBOYZUTA_UFzeO3xUV'
+    movies_dict_file_id = os.getenv("MOVIES_DICT_FILE_ID")  # Example: '12Q5PDgfxt3uwetE2JZR6Or9iUfprCxZN'
+
+    # Download the files
+    download_from_drive(similarity_file_id, 'sparse_cosine_sim.pkl')
+    download_from_drive(movies_dict_file_id, 'movie_dict.pkl')
 
 
 # 1. Fetch movie poster using The Movie Database (TMDb) API
@@ -78,15 +118,8 @@ def load_model_data():
         DataFrame: DataFrame containing movie information.
         ndarray: Cosine similarity matrix.
     """
-    # Google Drive file IDs
-    similarity_file_id = os.getenv("SIMILARITY_FILE_ID")
-    movies_dict_file_id = os.getenv("MOVIES_DICT_FILE_ID")
-    # similarity_file_id = "1Io3LPN4d82bL5VzBOYZUTA_UFzeO3xUV"
-    # movies_dict_file_id = "12Q5PDgfxt3uwetE2JZR6Or9iUfprCxZN"
-
-    # Download the files
-    gdown.download(f"https://drive.google.com/uc?id={similarity_file_id}", "sparse_cosine_sim.pkl", quiet=False)
-    gdown.download(f"https://drive.google.com/uc?id={movies_dict_file_id}", "movie_dict.pkl", quiet=False)
+    # Call the download_files function
+    download_files()
 
 
     similarity = pkl.load(open('sparse_cosine_sim.pkl', 'rb'))
